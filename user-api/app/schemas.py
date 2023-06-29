@@ -1,16 +1,16 @@
 from datetime import datetime
 
-from pydantic import UUID4, BaseModel
+from pydantic import BaseModel, EmailStr
 
 
 class UserIn(BaseModel):
     name: str
     cpf: str
-    email: str
+    email: EmailStr
     phone_number: str
 
 
 class UserOut(UserIn):
-    id: UUID4
+    id: int
     created_at: datetime
     updated_at: datetime

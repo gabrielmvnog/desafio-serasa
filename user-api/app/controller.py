@@ -1,5 +1,4 @@
 from fastapi import APIRouter, HTTPException, status
-from pydantic import UUID4
 
 import app.services as services
 from app.exceptions import ConflictException
@@ -9,7 +8,7 @@ router = APIRouter(prefix="/users", tags=["users"])
 
 
 @router.put("/{user_id}", response_model=UserOut, status_code=status.HTTP_201_CREATED)
-async def create_user(user_id: UUID4, user: UserIn):
+async def create_user(user_id: int, user: UserIn):
     try:
         response = services.create_user(user_id, user)
     except ConflictException:
@@ -21,7 +20,7 @@ async def create_user(user_id: UUID4, user: UserIn):
 
 
 @router.post("/{user_id}", response_model=UserOut)
-async def update_user(user_id: UUID4, user: UserIn):
+async def update_user(user_id: int, user: UserIn):
     response = services.update_user(user_id, user)
 
     if not response:
@@ -33,7 +32,7 @@ async def update_user(user_id: UUID4, user: UserIn):
 
 
 @router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_user(user_id: UUID4):
+async def delete_user(user_id: int):
     response = services.delete_user(user_id=user_id)
 
     if not response:
@@ -43,7 +42,7 @@ async def delete_user(user_id: UUID4):
 
 
 @router.get("/{user_id}", response_model=UserOut)
-async def detail_user(user_id: UUID4):
+async def detail_user(user_id: int):
     user = services.detail_user(user_id=user_id)
 
     if not user:

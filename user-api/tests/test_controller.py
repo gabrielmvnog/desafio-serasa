@@ -7,17 +7,17 @@ from tests.factories import create_user_in_data
 
 @pytest.fixture
 def create_url():
-    return "/users/bed710e7-1575-4b9c-8c90-b04126e34925"
+    return "/users/1"
 
 
 @pytest.fixture
 def update_url():
-    return "/users/bed710e7-1575-4b9c-8c90-b04126e34925"
+    return "/users/1"
 
 
 @pytest.fixture
 def delete_url():
-    return "/users/bed710e7-1575-4b9c-8c90-b04126e34925"
+    return "/users/1"
 
 
 @pytest.fixture
@@ -27,7 +27,7 @@ def list_url():
 
 @pytest.fixture
 def detail_url():
-    return "/users/bed710e7-1575-4b9c-8c90-b04126e34925"
+    return "/users/1"
 
 
 @pytest.mark.usefixtures("mocked_create_user_service")
@@ -40,7 +40,7 @@ def test_create_should_return_user(client, create_url):
         "cpf": "212.389.060-01",
         "email": "user_test@gmail.com",
         "phone_number": "(61)995637801",
-        "id": "bf97296f-251b-41d4-9a0c-5be0dfac5716",
+        "id": 1,
         "created_at": "2023-07-01T00:00:00",
         "updated_at": "2023-07-01T00:00:00",
     }
@@ -94,7 +94,7 @@ def test_update_should_return_updated_user(client, update_url):
         "cpf": "212.389.060-01",
         "email": "user_test@gmail.com",
         "phone_number": "(61)995637801",
-        "id": "bf97296f-251b-41d4-9a0c-5be0dfac5716",
+        "id": 1,
         "created_at": "2023-07-01T00:00:00",
         "updated_at": "2023-07-01T00:00:00",
     }
@@ -143,7 +143,7 @@ def test_delete_should_return_no_content(client, delete_url):
     response = client.delete(delete_url)
 
     assert response.status_code == status.HTTP_204_NO_CONTENT
-    assert response.content == b''
+    assert response.content == b""
 
 
 def test_delete_should_return_not_found(client, delete_url, mocked_delete_user_service):
@@ -163,7 +163,7 @@ def test_detail_should_return_user(client, detail_url):
         "cpf": "212.389.060-01",
         "email": "user_test@gmail.com",
         "phone_number": "(61)995637801",
-        "id": "bf97296f-251b-41d4-9a0c-5be0dfac5716",
+        "id": 1,
         "created_at": "2023-07-01T00:00:00",
         "updated_at": "2023-07-01T00:00:00",
     }
@@ -188,7 +188,7 @@ def test_list_should_return_users(client, list_url):
             "cpf": "212.389.060-01",
             "email": "user_test@gmail.com",
             "phone_number": "(61)995637801",
-            "id": "bf97296f-251b-41d4-9a0c-5be0dfac5716",
+            "id": 1,
             "created_at": "2023-07-01T00:00:00",
             "updated_at": "2023-07-01T00:00:00",
         }

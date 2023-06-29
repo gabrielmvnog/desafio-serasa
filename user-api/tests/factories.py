@@ -15,7 +15,7 @@ def create_user_in_data():
 def create_user_out_data():
     return UserOut(
         **create_user_in_data().dict(),
-        id="bf97296f-251b-41d4-9a0c-5be0dfac5716",
+        id=1,
         created_at=datetime(2023, 7, 1),
         updated_at=datetime(2023, 7, 1),
     )
