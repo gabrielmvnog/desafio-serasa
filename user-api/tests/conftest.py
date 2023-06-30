@@ -7,7 +7,8 @@ from tests.factories import create_user_out_data
 
 @pytest.fixture
 def client():
-    return TestClient(app)
+    with TestClient(app) as client:
+        yield client
 
 
 @pytest.fixture
@@ -17,7 +18,7 @@ def mocked_create_user_service(mocker):
 
 @pytest.fixture
 def mocked_update_user_service(mocker):
-    return mocker.patch("app.services.update_user", return_value=create_user_out_data())
+    return mocker.patch("app.services.update_user", return_value=True)
 
 
 @pytest.fixture
@@ -32,4 +33,6 @@ def mocked_detail_user_service(mocker):
 
 @pytest.fixture
 def mocked_list_users_service(mocker):
-    return mocker.patch("app.services.list_users", return_value=[create_user_out_data()])
+    return mocker.patch(
+        "app.services.list_users", return_value=[create_user_out_data()]
+    )

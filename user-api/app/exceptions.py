@@ -1,2 +1,6 @@
 class ConflictException(Exception):
     ...
+
+
+class UserNotFounException(Exception):
+    ...
