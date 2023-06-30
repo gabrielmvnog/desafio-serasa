@@ -11,6 +11,12 @@ async def check_for_orders(user_id: int) -> None:
     async with httpx.AsyncClient() as client:
         response = await client.get(settings.ORDER_API_URL, params={"user_id": user_id})
 
+    if response.status_code != status.HTTP_200_OK:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Orders API is not responding",
+        )
+
     if len(response.json()) > 0:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,

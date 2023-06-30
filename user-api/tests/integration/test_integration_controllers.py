@@ -166,6 +166,13 @@ def test_integration_delete_should_return_not_found(client):
     assert response.json() == {"detail": "User not found"}
 
 
+def test_integration_delete_should_return_conflict(client):
+    response = client.delete("/users/99999")
+
+    assert response.status_code == status.HTTP_409_CONFLICT
+    assert response.json() == {"detail": "User id [99999] has orders"}
+
+
 def test_integration_list_should_return_empty_list(client, list_url):
     response = client.get(list_url)
 
