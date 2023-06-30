@@ -2,9 +2,9 @@ from fastapi.encoders import jsonable_encoder
 from sqlalchemy.exc import IntegrityError, NoResultFound
 from sqlalchemy.orm import Session
 
-from app.exceptions import ConflictException, UserNotFounException
-from app.models import User
-from app.schemas import UserIn, UserOut
+from app.users.exceptions import ConflictException, UserNotFounException
+from app.users.models import User
+from app.users.schemas import UserIn, UserOut
 
 
 def list_users(db: Session, skip: int = 0, limit: int = 10) -> list[UserOut | None]:

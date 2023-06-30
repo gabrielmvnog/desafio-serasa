@@ -2,14 +2,16 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
-from app.config import settings
-from app.controllers import router
 from redis import asyncio as aioredis
 
+from app.config import settings
+from app.healthchecks.controllers import router as healthchecks_router
+from app.users.controllers import router as users_router
 
 app = FastAPI()
 
-app.include_router(router)
+app.include_router(healthchecks_router)
+app.include_router(users_router)
 
 
 @app.on_event("startup")

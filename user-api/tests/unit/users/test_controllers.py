@@ -1,7 +1,7 @@
 import pytest
 from fastapi import status
 
-from app.exceptions import ConflictException, UserNotFounException
+from app.users.exceptions import ConflictException, UserNotFounException
 from tests.factories import create_user_in_data
 
 

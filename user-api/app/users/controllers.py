@@ -1,12 +1,12 @@
-from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.responses import RedirectResponse
+from fastapi_cache.decorator import cache
 from sqlalchemy.orm import Session
 
-import app.services as services
+import app.users.services as services
 from app.dependencies import get_db
-from app.exceptions import ConflictException, UserNotFounException
-from app.schemas import UserIn, UserOut
-from fastapi_cache.decorator import cache
+from app.users.exceptions import ConflictException, UserNotFounException
+from app.users.schemas import UserIn, UserOut
 
 router = APIRouter(prefix="/users", tags=["users"])
 

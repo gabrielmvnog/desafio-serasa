@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from app.schemas import UserIn, UserOut
+from app.users.schemas import UserIn, UserOut
 
 
 def create_user_in_data():
