@@ -1,45 +1,19 @@
-import pytest
 from fastapi import status
 
 from tests.factories import create_user_in_data
 
 
-@pytest.fixture
-def create_url():
-    return "/users/1"
-
-
-@pytest.fixture
-def update_url():
-    return "/users/1"
-
-
-@pytest.fixture
-def delete_url():
-    return "/users/1"
-
-
-@pytest.fixture
-def list_url():
-    return "/users"
-
-
-@pytest.fixture
-def detail_url():
-    return "/users/1"
-
-
 def test_integration_create_should_return_user(client, create_url):
-    response = client.put(create_url, json=create_user_in_data().dict())
+    response = client.put(create_url, json=create_user_in_data())
     content = response.json()
     content.pop("created_at")
 
     assert response.status_code == status.HTTP_201_CREATED
     assert content == {
         "name": "User Test",
-        "cpf": "212.389.060-01",
+        "cpf": "21238906001",
         "email": "user_test@gmail.com",
-        "phone_number": "(61)995637801",
+        "phone_number": "+5521999999999",
         "id": 1,
         "updated_at": None,
     }
@@ -47,7 +21,7 @@ def test_integration_create_should_return_user(client, create_url):
 
 def test_integration_create_should_return_see_other(client, create_url):
     response = client.put(
-        create_url, json=create_user_in_data().dict(), follow_redirects=False
+        create_url, json=create_user_in_data(), follow_redirects=False
     )
 
     assert response.status_code == status.HTTP_303_SEE_OTHER
@@ -80,6 +54,11 @@ def test_integration_create_should_return_unprocessable_entity(client, create_ur
                 "msg": "field required",
                 "type": "value_error.missing",
             },
+            {
+                "loc": ["body", "not"],
+                "msg": "extra fields not permitted",
+                "type": "value_error.extra",
+            },
         ]
     }
 
@@ -91,9 +70,9 @@ def test_integration_detail_should_return_user(client, detail_url):
 
     assert content == {
         "name": "User Test",
-        "cpf": "212.389.060-01",
+        "cpf": "21238906001",
         "email": "user_test@gmail.com",
-        "phone_number": "(61)995637801",
+        "phone_number": "+5521999999999",
         "id": 1,
         "updated_at": None,
     }
@@ -115,9 +94,9 @@ def test_integration_list_should_return_users(client, list_url):
     assert content == [
         {
             "name": "User Test",
-            "cpf": "212.389.060-01",
+            "cpf": "21238906001",
             "email": "user_test@gmail.com",
-            "phone_number": "(61)995637801",
+            "phone_number": "+5521999999999",
             "id": 1,
             "updated_at": None,
         }
@@ -125,7 +104,7 @@ def test_integration_list_should_return_users(client, list_url):
 
 
 def test_integration_update_should_return_updated_user(client, update_url):
-    response = client.post(update_url, json=create_user_in_data().dict())
+    response = client.post(update_url, json=create_user_in_data())
 
     assert response.status_code == status.HTTP_200_OK
     assert response.content == b"null"
@@ -157,12 +136,17 @@ def test_integration_update_should_return_unprocessable_entity(client, update_ur
                 "msg": "field required",
                 "type": "value_error.missing",
             },
+            {
+                "loc": ["body", "not"],
+                "msg": "extra fields not permitted",
+                "type": "value_error.extra",
+            },
         ]
     }
 
 
 def test_integration_update_should_return_not_found(client):
-    response = client.post("/users/2", json=create_user_in_data().dict())
+    response = client.post("/users/2", json=create_user_in_data())
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
     assert response.json() == {"detail": "User not found"}

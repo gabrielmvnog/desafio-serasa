@@ -4,6 +4,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from app.main import app
+from app.users.schemas import UserOut
 from tests.factories import create_user_out_data
 
 
@@ -19,10 +20,38 @@ def user_id():
 
 
 @pytest.fixture
-def mocked_create_user_service(mocker):
-    return mocker.patch(
-        "app.users.services.create_user", return_value=create_user_out_data()
-    )
+def create_url(user_id):
+    return f"/users/{user_id}"
+
+
+@pytest.fixture
+def update_url(user_id):
+    return f"/users/{user_id}"
+
+
+@pytest.fixture
+def delete_url(user_id):
+    return f"/users/{user_id}"
+
+
+@pytest.fixture
+def detail_url(user_id):
+    return f"/users/{user_id}"
+
+
+@pytest.fixture
+def list_url():
+    return "/users"
+
+
+@pytest.fixture
+def user_out_data():
+    return UserOut.parse_obj(create_user_out_data())
+
+
+@pytest.fixture
+def mocked_create_user_service(mocker, user_out_data):
+    return mocker.patch("app.users.services.create_user", return_value=user_out_data)
 
 
 @pytest.fixture
@@ -36,17 +65,13 @@ def mocked_delete_user_service(mocker):
 
 
 @pytest.fixture
-def mocked_detail_user_service(mocker):
-    return mocker.patch(
-        "app.users.services.detail_user", return_value=create_user_out_data()
-    )
+def mocked_detail_user_service(mocker, user_out_data):
+    return mocker.patch("app.users.services.detail_user", return_value=user_out_data)
 
 
 @pytest.fixture
-def mocked_list_users_service(mocker):
-    return mocker.patch(
-        "app.users.services.list_users", return_value=[create_user_out_data()]
-    )
+def mocked_list_users_service(mocker, user_out_data):
+    return mocker.patch("app.users.services.list_users", return_value=[user_out_data])
 
 
 @pytest.fixture

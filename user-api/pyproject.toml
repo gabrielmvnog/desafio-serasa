@@ -15,6 +15,8 @@ alembic = "^1.11.1"
 psycopg2 = "^2.9.6"
 pydantic = {extras = ["email"], version = "^1.10.9"}
 fastapi-cache2 = {extras = ["redis"], version = "^0.2.1"}
+validate-docbr = "^1.10.0"
+phonenumbers = "^8.13.15"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.0.275"
