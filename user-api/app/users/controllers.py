@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Request, status
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
 from fastapi.responses import RedirectResponse
 from fastapi_cache.decorator import cache
 from sqlalchemy.orm import Session
@@ -60,7 +60,11 @@ async def detail_user(user_id: int, db: Session = Depends(get_db)) -> UserOut:
 
 @router.get("")
 @cache(expire=60)
-async def list_users(db: Session = Depends(get_db)) -> list[UserOut | None]:
-    user = services.list_users(db)
+async def list_users(
+    skip: int | None = Query(None),
+    limit: int | None = Query(None),
+    db: Session = Depends(get_db),
+) -> list[UserOut | None]:
+    user = services.list_users(db, skip=skip, limit=limit)
 
     return user
