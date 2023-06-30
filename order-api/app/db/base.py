@@ -1,2 +1,2 @@
 from app.db.base_class import Base  # noqa
-from app.models import Order  # noqa
+from app.orders.models import Order  # noqa

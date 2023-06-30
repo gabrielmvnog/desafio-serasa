@@ -2,9 +2,9 @@ from fastapi.encoders import jsonable_encoder
 from sqlalchemy.exc import IntegrityError, NoResultFound
 from sqlalchemy.orm import Session
 
-from app.exceptions import ConflictException, OrderNotFounException
-from app.models import Order
-from app.schemas import OrderIn, OrderOut
+from app.orders.exceptions import ConflictException, OrderNotFounException
+from app.orders.models import Order
+from app.orders.schemas import OrderIn, OrderOut
 
 
 def list_orders(db: Session, skip: int = 0, limit: int = 10) -> list[OrderOut | None]:

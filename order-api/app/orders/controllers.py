@@ -2,10 +2,10 @@ from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
 from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
 
-import app.services as services
+import app.orders.services as services
 from app.dependencies import get_db, validate_order
-from app.exceptions import ConflictException, OrderNotFounException
-from app.schemas import OrderIn, OrderOut
+from app.orders.exceptions import ConflictException, OrderNotFounException
+from app.orders.schemas import OrderIn, OrderOut
 
 router = APIRouter(prefix="/orders", tags=["orders"])
 

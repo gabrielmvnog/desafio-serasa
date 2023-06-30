@@ -1,7 +1,7 @@
 from typing import Generator
 
 from app.db.session import SessionLocal
-from app.schemas import OrderIn
+from app.orders.schemas import OrderIn
 
 
 def validate_order(order_in: OrderIn):

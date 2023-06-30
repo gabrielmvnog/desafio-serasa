@@ -1,7 +1,7 @@
 import pytest
 from fastapi import status
 
-from app.exceptions import ConflictException, OrderNotFounException
+from app.orders.exceptions import ConflictException, OrderNotFounException
 from tests.factories import create_order_in_data
 
 

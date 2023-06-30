@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from app.schemas import OrderIn, OrderOut
+from app.orders.schemas import OrderIn, OrderOut
 
 
 def create_order_in_data():
