@@ -1,6 +1,17 @@
-version: '2'
+version: '3.2'
 services:
-    redis_order:
+    redis_user:
         image: sickp/alpine-redis:3.2.2
         ports:
-            - "6380:6379"
+            - "6379:6379"
+
+    postgres_user:
+        image: postgres:14.1-alpine
+        restart: always
+        environment:
+            POSTGRES_SERVER: db
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: postgres
+            POSTGRES_DB: app
+        ports:
+        - "5432:5432"
