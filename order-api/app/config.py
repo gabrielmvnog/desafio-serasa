@@ -1,6 +1,6 @@
 from typing import Any
 
-from pydantic import AnyHttpUrl, BaseSettings, PostgresDsn, validator
+from pydantic import AnyHttpUrl, BaseSettings, Field, PostgresDsn, validator
 
 
 class Settings(BaseSettings):
@@ -9,10 +9,10 @@ class Settings(BaseSettings):
         "http://localhost:8080",
     ]
 
-    POSTGRES_SERVER: str
-    POSTGRES_USER: str
-    POSTGRES_PASSWORD: str
-    POSTGRES_DB: str
+    POSTGRES_SERVER: str = Field(default="localhost")
+    POSTGRES_USER: str = Field(default="postgres")
+    POSTGRES_PASSWORD: str = Field(default="postgres")
+    POSTGRES_DB: str = Field(default="app")
 
     SQLALCHEMY_DATABASE_URI: PostgresDsn | None = None
 
