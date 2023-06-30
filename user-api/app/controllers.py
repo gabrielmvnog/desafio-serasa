@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, Request, status
+from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
 
 import app.services as services
 from app.dependencies import get_db
 from app.exceptions import ConflictException, UserNotFounException
 from app.schemas import UserIn, UserOut
-from fastapi.responses import RedirectResponse
 
 router = APIRouter(prefix="/users", tags=["users"])
 

@@ -46,10 +46,12 @@ def test_integration_create_should_return_user(client, create_url):
 
 
 def test_integration_create_should_return_see_other(client, create_url):
-    response = client.put(create_url, json=create_user_in_data().dict())
+    response = client.put(
+        create_url, json=create_user_in_data().dict(), follow_redirects=False
+    )
 
     assert response.status_code == status.HTTP_303_SEE_OTHER
-    assert response.json() == {"detail": "User already exist"}
+    assert response.content == b""
 
 
 def test_integration_create_should_return_unprocessable_entity(client, create_url):
