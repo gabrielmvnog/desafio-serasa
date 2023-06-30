@@ -5,13 +5,23 @@ from sqlalchemy.orm import Session
 
 import app.users.services as services
 from app.dependencies import check_for_orders, get_db
+from app.examples import (
+    RESPONSE_303_EXAMPLE,
+    RESPONSE_404_EXAMPLE,
+    RESPONSE_409_EXAMPLE,
+    RESPONSE_422_EXAMPLE,
+)
 from app.users.exceptions import ConflictException, UserNotFounException
 from app.users.schemas import UserIn, UserOut
 
 router = APIRouter(prefix="/users", tags=["users"])
 
 
-@router.put("/{user_id}", status_code=status.HTTP_201_CREATED)
+@router.put(
+    "/{user_id}",
+    status_code=status.HTTP_201_CREATED,
+    responses={**RESPONSE_303_EXAMPLE, **RESPONSE_422_EXAMPLE},
+)
 async def create_user(
     request: Request, user_id: int, user_in: UserIn, db: Session = Depends(get_db)
 ) -> UserOut:
@@ -23,7 +33,10 @@ async def create_user(
     return response
 
 
-@router.post("/{user_id}")
+@router.post(
+    "/{user_id}",
+    responses={**RESPONSE_404_EXAMPLE, **RESPONSE_422_EXAMPLE},
+)
 async def update_user(
     user_id: int, user_in: UserIn, db: Session = Depends(get_db)
 ) -> None:
@@ -35,7 +48,11 @@ async def update_user(
         )
 
 
-@router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete(
+    "/{user_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    responses={**RESPONSE_404_EXAMPLE, **RESPONSE_422_EXAMPLE, **RESPONSE_409_EXAMPLE},
+)
 async def delete_user(
     user_id: int, db: Session = Depends(get_db), _: None = Depends(check_for_orders)
 ) -> None:
@@ -47,7 +64,10 @@ async def delete_user(
         )
 
 
-@router.get("/{user_id}")
+@router.get(
+    "/{user_id}",
+    responses={**RESPONSE_404_EXAMPLE, **RESPONSE_422_EXAMPLE},
+)
 @cache(expire=60)
 async def detail_user(user_id: int, db: Session = Depends(get_db)) -> UserOut:
     try:
@@ -60,11 +80,11 @@ async def detail_user(user_id: int, db: Session = Depends(get_db)) -> UserOut:
     return user
 
 
-@router.get("")
+@router.get("", responses=RESPONSE_422_EXAMPLE)
 @cache(expire=60)
 async def list_users(
-    skip: int | None = Query(None),
-    limit: int | None = Query(None),
+    skip: int | None = Query(None, example=0),
+    limit: int | None = Query(None, example=10),
     db: Session = Depends(get_db),
 ) -> list[UserOut | None]:
     user = services.list_users(db, skip=skip, limit=limit)
