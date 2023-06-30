@@ -1,6 +1,7 @@
 from unittest.mock import MagicMock
 
 import pytest
+from fastapi import status
 from fastapi.testclient import TestClient
 
 from app.main import app
@@ -77,5 +78,6 @@ def mocked_list_users_service(mocker, user_out_data):
 @pytest.fixture
 def mocked_httpx_get(mocker):
     return mocker.patch(
-        "httpx.AsyncClient.get", return_value=MagicMock(json=lambda: [])
+        "httpx.AsyncClient.get",
+        return_value=MagicMock(json=lambda: [], status_code=status.HTTP_200_OK),
     )

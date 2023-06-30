@@ -16,7 +16,9 @@ async def test_check_for_orders_should_pass(user_id):
 
 @pytest.mark.anyio
 async def test_check_for_orders_should_raise_for_conflict(user_id, mocked_httpx_get):
-    mocked_httpx_get.return_value = MagicMock(json=lambda: [{"order": "fake"}])
+    mocked_httpx_get.return_value = MagicMock(
+        json=lambda: [{"order": "fake"}], status_code=status.HTTP_200_OK
+    )
 
     with pytest.raises(HTTPException) as err:
         await check_for_orders(user_id)
