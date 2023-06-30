@@ -1,9 +1,11 @@
 from unittest.mock import MagicMock
+
 import pytest
 from fastapi import HTTPException, status
 
 from app.dependencies import validate_order
 from tests.factories import create_order_in_data
+
 
 @pytest.mark.anyio
 @pytest.mark.usefixtures("mocked_httpx_get")
