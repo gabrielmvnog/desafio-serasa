@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
 from fastapi.responses import RedirectResponse
+from fastapi_cache.decorator import cache
 from sqlalchemy.orm import Session
 
 import app.orders.services as services
@@ -48,6 +49,7 @@ async def delete_order(order_id: int, db: Session = Depends(get_db)) -> None:
 
 
 @router.get("/{order_id}")
+@cache(expire=60)
 async def detail_order(order_id: int, db: Session = Depends(get_db)) -> OrderOut:
     try:
         response = services.detail_order(db, order_id=order_id)
@@ -60,6 +62,7 @@ async def detail_order(order_id: int, db: Session = Depends(get_db)) -> OrderOut
 
 
 @router.get("")
+@cache(expire=60)
 async def list_orders(
     order_id: int | None = Query(None), db: Session = Depends(get_db)
 ) -> list[OrderOut | None]:
