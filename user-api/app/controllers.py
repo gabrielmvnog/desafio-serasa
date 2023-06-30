@@ -1,24 +1,23 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy.orm import Session
 
 import app.services as services
 from app.dependencies import get_db
 from app.exceptions import ConflictException, UserNotFounException
 from app.schemas import UserIn, UserOut
+from fastapi.responses import RedirectResponse
 
 router = APIRouter(prefix="/users", tags=["users"])
 
 
 @router.put("/{user_id}", status_code=status.HTTP_201_CREATED)
 async def create_user(
-    user_id: int, user_in: UserIn, db: Session = Depends(get_db)
+    request: Request, user_id: int, user_in: UserIn, db: Session = Depends(get_db)
 ) -> UserOut:
     try:
         response = services.create_user(db, user_in=user_in, user_id=user_id)
     except ConflictException:
-        raise HTTPException(
-            status_code=status.HTTP_303_SEE_OTHER, detail="User already exist"
-        ) from None
+        return RedirectResponse(request.url, status_code=status.HTTP_303_SEE_OTHER)
 
     return response
 

@@ -1,9 +1,14 @@
 from typing import Any
 
-from pydantic import BaseSettings, PostgresDsn, validator
+from pydantic import AnyHttpUrl, BaseSettings, PostgresDsn, validator
 
 
 class Settings(BaseSettings):
+    BACKEND_CORS_ORIGINS: list[AnyHttpUrl] = [
+        "http://localhost",
+        "http://localhost:8080",
+    ]
+
     POSTGRES_SERVER: str
     POSTGRES_USER: str
     POSTGRES_PASSWORD: str
@@ -25,7 +30,7 @@ class Settings(BaseSettings):
         )
 
     class Config:
-        env_file = '.env'
+        env_file = ".env"
         case_sensitive = True
 
 
