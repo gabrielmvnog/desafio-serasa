@@ -1,3 +1,5 @@
+from unittest.mock import MagicMock
+
 import pytest
 from fastapi.testclient import TestClient
 
@@ -12,8 +14,15 @@ def client():
 
 
 @pytest.fixture
+def user_id():
+    return 1
+
+
+@pytest.fixture
 def mocked_create_user_service(mocker):
-    return mocker.patch("app.users.services.create_user", return_value=create_user_out_data())
+    return mocker.patch(
+        "app.users.services.create_user", return_value=create_user_out_data()
+    )
 
 
 @pytest.fixture
@@ -28,11 +37,20 @@ def mocked_delete_user_service(mocker):
 
 @pytest.fixture
 def mocked_detail_user_service(mocker):
-    return mocker.patch("app.users.services.detail_user", return_value=create_user_out_data())
+    return mocker.patch(
+        "app.users.services.detail_user", return_value=create_user_out_data()
+    )
 
 
 @pytest.fixture
 def mocked_list_users_service(mocker):
     return mocker.patch(
         "app.users.services.list_users", return_value=[create_user_out_data()]
+    )
+
+
+@pytest.fixture
+def mocked_httpx_get(mocker):
+    return mocker.patch(
+        "httpx.AsyncClient.get", return_value=MagicMock(json=lambda: [])
     )

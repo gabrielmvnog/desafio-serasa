@@ -4,7 +4,7 @@ from fastapi_cache.decorator import cache
 from sqlalchemy.orm import Session
 
 import app.users.services as services
-from app.dependencies import get_db
+from app.dependencies import check_for_orders, get_db
 from app.users.exceptions import ConflictException, UserNotFounException
 from app.users.schemas import UserIn, UserOut
 
@@ -36,7 +36,9 @@ async def update_user(
 
 
 @router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_user(user_id: int, db: Session = Depends(get_db)) -> None:
+async def delete_user(
+    user_id: int, db: Session = Depends(get_db), _: None = Depends(check_for_orders)
+) -> None:
     response = services.delete_user(db, user_id=user_id)
 
     if not response:
