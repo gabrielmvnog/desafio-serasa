@@ -64,8 +64,11 @@ async def detail_order(order_id: int, db: Session = Depends(get_db)) -> OrderOut
 @router.get("")
 @cache(expire=60)
 async def list_orders(
-    order_id: int | None = Query(None), db: Session = Depends(get_db)
+    user_id: int | None = Query(None),
+    skip: int | None = Query(None),
+    limit: int | None = Query(None),
+    db: Session = Depends(get_db),
 ) -> list[OrderOut | None]:
-    response = services.list_orders(db)
+    response = services.list_orders(db, user_id=user_id, skip=skip, limit=limit)
 
     return response

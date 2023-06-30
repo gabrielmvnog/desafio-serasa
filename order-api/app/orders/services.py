@@ -7,8 +7,15 @@ from app.orders.models import Order
 from app.orders.schemas import OrderIn, OrderOut
 
 
-def list_orders(db: Session, skip: int = 0, limit: int = 10) -> list[OrderOut | None]:
-    return db.query(Order).offset(skip).limit(limit).all()
+def list_orders(
+    db: Session, user_id: int | None = None, skip: int = 0, limit: int = 10
+) -> list[OrderOut | None]:
+    query = db.query(Order)
+
+    if user_id:
+        query = query.filter(Order.user_id == user_id)
+
+    return query.offset(skip).limit(limit).all()
 
 
 def detail_order(db: Session, order_id: int) -> OrderOut:
