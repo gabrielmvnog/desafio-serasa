@@ -14,4 +14,11 @@ services:
             POSTGRES_PASSWORD: postgres
             POSTGRES_DB: app
         ports:
-        - "5432:5432"
+            - "5432:5432"
+
+    wiremock_user:
+        image: wiremock/wiremock:2.35.0
+        volumes:
+            - ./wiremock:/home/wiremock
+        ports:
+            - "8443:8080"

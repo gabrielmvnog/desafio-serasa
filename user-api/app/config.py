@@ -9,7 +9,7 @@ class Settings(BaseSettings):
         "http://localhost:8080",
     ]
 
-    ORDER_API_URL: AnyHttpUrl = Field(default="http://localhost")
+    ORDER_API_URL: AnyHttpUrl = Field(default="http://localhost:8443/orders")
 
     POSTGRES_SERVER: str = Field(default="localhost")
     POSTGRES_USER: str = Field(default="postgres")

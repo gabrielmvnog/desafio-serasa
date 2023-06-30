@@ -1,0 +1,22 @@
+{
+    "mappings": [
+        {
+            "request": {
+                "url": "/orders?user_id=1"
+            },
+            "response": {
+                "status": 200,
+                "body": "[]"
+            }
+        },
+        {
+            "request": {
+                "url": "/orders?user_id=2"
+            },
+            "response": {
+                "status": 200,
+                "body": "[]"
+            }
+        }
+    ]
+}

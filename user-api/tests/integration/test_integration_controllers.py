@@ -168,7 +168,6 @@ def test_integration_update_should_return_not_found(client):
     assert response.json() == {"detail": "User not found"}
 
 
-@pytest.mark.usefixtures("mocked_httpx_get")
 def test_integration_delete_should_return_no_content(client, delete_url):
     response = client.delete(delete_url)
 
@@ -176,7 +175,6 @@ def test_integration_delete_should_return_no_content(client, delete_url):
     assert response.content == b""
 
 
-@pytest.mark.usefixtures("mocked_httpx_get")
 def test_integration_delete_should_return_not_found(client):
     response = client.delete("/users/2")
 
