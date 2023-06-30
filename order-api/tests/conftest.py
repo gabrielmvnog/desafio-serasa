@@ -1,3 +1,4 @@
+from unittest.mock import MagicMock
 import pytest
 from fastapi.testclient import TestClient
 
@@ -39,4 +40,11 @@ def mocked_detail_order_service(mocker):
 def mocked_list_orders_service(mocker):
     return mocker.patch(
         "app.orders.services.list_orders", return_value=[create_order_out_data()]
+    )
+
+
+@pytest.fixture
+def mocked_httpx_get(mocker):
+    return mocker.patch(
+        "httpx.AsyncClient.get", return_value=MagicMock(status_code=200)
     )

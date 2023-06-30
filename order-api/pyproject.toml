@@ -24,6 +24,8 @@ pytest = "^7.4.0"
 httpx = "^0.24.1"
 pytest-mock = "^3.11.1"
 sqlalchemy-utils = "^0.41.1"
+anyio = "^3.7.0"
+trio = "^0.22.0"
 
 [build-system]
 requires = ["poetry-core"]

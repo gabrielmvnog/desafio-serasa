@@ -30,7 +30,7 @@ def detail_url():
     return "/orders/1"
 
 
-@pytest.mark.usefixtures("mocked_create_order_service")
+@pytest.mark.usefixtures("mocked_create_order_service", "mocked_httpx_get")
 def test_unit_create_should_return_order(client, create_url):
     response = client.put(create_url, json=create_order_in_data().dict())
 
@@ -82,6 +82,7 @@ def test_unit_create_should_return_unprocessable_entity(client, create_url):
     }
 
 
+@pytest.mark.usefixtures("mocked_httpx_get")
 def test_unit_create_should_return_see_other(
     client, create_url, mocked_create_order_service
 ):
