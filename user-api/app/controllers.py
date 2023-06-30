@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Request, status
+from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
 from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
 
@@ -6,6 +6,7 @@ import app.services as services
 from app.dependencies import get_db
 from app.exceptions import ConflictException, UserNotFounException
 from app.schemas import UserIn, UserOut
+from fastapi_cache.decorator import cache
 
 router = APIRouter(prefix="/users", tags=["users"])
 
@@ -45,6 +46,7 @@ async def delete_user(user_id: int, db: Session = Depends(get_db)) -> None:
 
 
 @router.get("/{user_id}")
+@cache(expire=60)
 async def detail_user(user_id: int, db: Session = Depends(get_db)) -> UserOut:
     try:
         user = services.detail_user(db, user_id=user_id)
@@ -57,6 +59,7 @@ async def detail_user(user_id: int, db: Session = Depends(get_db)) -> UserOut:
 
 
 @router.get("")
+@cache(expire=60)
 async def list_users(db: Session = Depends(get_db)) -> list[UserOut | None]:
     user = services.list_users(db)
 
