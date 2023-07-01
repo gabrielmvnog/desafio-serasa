@@ -1,7 +1,6 @@
-FROM python:3.11
+FROM python:3.11-slim
 
-COPY /app /app
-COPY pyproject.toml /app 
+COPY ./ /app
 
 WORKDIR /app
 
@@ -11,4 +10,4 @@ RUN pip3 install poetry
 RUN poetry config virtualenvs.create false
 RUN poetry install --no-root --only main
 
-CMD ["uvicorn", "main:app"]
+CMD ["poetry", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0"]
