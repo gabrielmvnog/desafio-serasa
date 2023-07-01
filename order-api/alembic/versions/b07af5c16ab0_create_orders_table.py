@@ -1,16 +1,16 @@
 """create_orders_table
 
-Revision ID: b9fb2eed08d0
-Revises:
-Create Date: 2023-06-29 23:10:29.486954
+Revision ID: b07af5c16ab0
+Revises: 
+Create Date: 2023-07-01 16:50:28.440334
 
 """
+from alembic import op
 import sqlalchemy as sa
 
-from alembic import op
 
 # revision identifiers, used by Alembic.
-revision = 'b9fb2eed08d0'
+revision = 'b07af5c16ab0'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -23,8 +23,8 @@ def upgrade() -> None:
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('item_description', sa.String(), nullable=False),
     sa.Column('item_quantity', sa.Integer(), nullable=False),
-    sa.Column('item_price', sa.Integer(), nullable=False),
-    sa.Column('total_value', sa.Integer(), nullable=False),
+    sa.Column('item_price', sa.Numeric(), nullable=False),
+    sa.Column('total_value', sa.Numeric(), nullable=False),
     sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=False),
     sa.Column('updated_at', sa.DateTime(timezone=True), nullable=True),
     sa.PrimaryKeyConstraint('id')

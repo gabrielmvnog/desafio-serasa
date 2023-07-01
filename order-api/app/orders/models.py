@@ -1,3 +1,4 @@
+from decimal import Decimal
 from sqlalchemy import DateTime
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.sql import func
@@ -12,8 +13,8 @@ class Order(Base):
     user_id: Mapped[int]
     item_description: Mapped[str]
     item_quantity: Mapped[int]
-    item_price: Mapped[int]
-    total_value: Mapped[int]
+    item_price: Mapped[Decimal]
+    total_value: Mapped[Decimal]
     created_at: Mapped[DateTime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
     )
