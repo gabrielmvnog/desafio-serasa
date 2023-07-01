@@ -8,7 +8,7 @@ from app.db.session import SessionLocal
 
 
 async def check_for_orders(user_id: int) -> None:
-    async with httpx.AsyncClient() as client:
+    async with httpx.AsyncClient(timeout=settings.ORDER_API_TIMEOUT) as client:
         response = await client.get(settings.ORDER_API_URL, params={"user_id": user_id})
 
     if response.status_code != status.HTTP_200_OK:

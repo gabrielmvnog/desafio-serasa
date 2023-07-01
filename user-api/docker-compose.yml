@@ -1,5 +1,18 @@
 version: '3.2'
 services:
+    api_user:
+        build: .
+        ports:
+            - "8000:8000"
+        environment:
+            POSTGRES_SERVER: postgres_user
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: postgres
+            POSTGRES_DB: app
+            ORDER_API_URL: http://wiremock_user:8080/orders
+            ORDER_API_TIMEOUT: 0.5
+            REDIS_URL: redis://redis_user:6379
+
     redis_user:
         image: sickp/alpine-redis:3.2.2
         ports:
