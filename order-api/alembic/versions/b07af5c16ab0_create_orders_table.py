@@ -1,13 +1,13 @@
 """create_orders_table
 
 Revision ID: b07af5c16ab0
-Revises: 
+Revises:
 Create Date: 2023-07-01 16:50:28.440334
 
 """
-from alembic import op
 import sqlalchemy as sa
 
+from alembic import op
 
 # revision identifiers, used by Alembic.
 revision = 'b07af5c16ab0'
