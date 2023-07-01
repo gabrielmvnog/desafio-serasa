@@ -35,6 +35,7 @@ async def create_user(
 
 @router.post(
     "/{user_id}",
+    status_code=status.HTTP_200_OK,
     responses={**RESPONSE_404_EXAMPLE, **RESPONSE_422_EXAMPLE},
 )
 async def update_user(
@@ -66,6 +67,7 @@ async def delete_user(
 
 @router.get(
     "/{user_id}",
+    status_code=status.HTTP_200_OK,
     responses={**RESPONSE_404_EXAMPLE, **RESPONSE_422_EXAMPLE},
 )
 @cache(expire=60)
@@ -80,7 +82,7 @@ async def detail_user(user_id: int, db: Session = Depends(get_db)) -> UserOut:
     return user
 
 
-@router.get("", responses=RESPONSE_422_EXAMPLE)
+@router.get("", status_code=status.HTTP_200_OK, responses=RESPONSE_422_EXAMPLE)
 @cache(expire=60)
 async def list_users(
     skip: int | None = Query(None, example=0),
