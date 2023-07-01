@@ -1,10 +1,13 @@
 from typing import Generator
 
 import httpx
-from fastapi import HTTPException, status
+from fastapi import HTTPException, Security, status
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 from app.config import settings
 from app.db.session import SessionLocal
+
+security = HTTPBearer()
 
 
 async def check_for_orders(user_id: int) -> None:
@@ -22,6 +25,11 @@ async def check_for_orders(user_id: int) -> None:
             status_code=status.HTTP_409_CONFLICT,
             detail=f"User id [{user_id}] has orders",
         )
+
+
+def authorizaton(credentials: HTTPAuthorizationCredentials = Security(security)):
+    if credentials.scheme != "Bearer" or credentials.credentials != settings.TOKEN:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
 
 
 def get_db() -> Generator:

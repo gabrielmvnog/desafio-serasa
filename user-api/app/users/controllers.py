@@ -4,7 +4,7 @@ from fastapi_cache.decorator import cache
 from sqlalchemy.orm import Session
 
 import app.users.services as services
-from app.dependencies import check_for_orders, get_db
+from app.dependencies import authorizaton, check_for_orders, get_db
 from app.examples import (
     RESPONSE_303_EXAMPLE,
     RESPONSE_404_EXAMPLE,
@@ -14,7 +14,9 @@ from app.examples import (
 from app.users.exceptions import ConflictException, UserNotFounException
 from app.users.schemas import UserIn, UserOut
 
-router = APIRouter(prefix="/users", tags=["users"])
+router = APIRouter(
+    prefix="/users", tags=["users"], dependencies=[Depends(authorizaton)]
+)
 
 
 @router.put(

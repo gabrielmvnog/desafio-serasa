@@ -11,7 +11,7 @@ from tests.factories import create_user_out_data
 
 @pytest.fixture
 def client():
-    with TestClient(app) as client:
+    with TestClient(app, headers={"Authorization": "Bearer hardcoded-token"}) as client:
         yield client
 
 
