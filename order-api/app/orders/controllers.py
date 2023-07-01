@@ -5,13 +5,23 @@ from sqlalchemy.orm import Session
 
 import app.orders.services as services
 from app.dependencies import get_db, validate_order
+from app.examples import (
+    RESPONSE_303_EXAMPLE,
+    RESPONSE_400_EXAMPLE,
+    RESPONSE_404_EXAMPLE,
+    RESPONSE_422_EXAMPLE,
+)
 from app.orders.exceptions import ConflictException, OrderNotFounException
 from app.orders.schemas import OrderIn, OrderOut
 
 router = APIRouter(prefix="/orders", tags=["orders"])
 
 
-@router.put("/{order_id}", status_code=status.HTTP_201_CREATED)
+@router.put(
+    "/{order_id}",
+    status_code=status.HTTP_201_CREATED,
+    responses={**RESPONSE_422_EXAMPLE, **RESPONSE_400_EXAMPLE, **RESPONSE_303_EXAMPLE},
+)
 async def create_order(
     request: Request,
     order_id: int,
@@ -26,7 +36,11 @@ async def create_order(
     return response
 
 
-@router.post("/{order_id}")
+@router.post(
+    "/{order_id}",
+    status_code=status.HTTP_200_OK,
+    responses={**RESPONSE_422_EXAMPLE, **RESPONSE_404_EXAMPLE},
+)
 async def update_order(
     order_id: int, order_in: OrderIn, db: Session = Depends(get_db)
 ) -> None:
@@ -38,7 +52,11 @@ async def update_order(
         )
 
 
-@router.delete("/{order_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete(
+    "/{order_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    responses=RESPONSE_404_EXAMPLE,
+)
 async def delete_order(order_id: int, db: Session = Depends(get_db)) -> None:
     response = services.delete_order(db, order_id=order_id)
 
@@ -48,7 +66,11 @@ async def delete_order(order_id: int, db: Session = Depends(get_db)) -> None:
         )
 
 
-@router.get("/{order_id}")
+@router.get(
+    "/{order_id}",
+    status_code=status.HTTP_200_OK,
+    responses={**RESPONSE_404_EXAMPLE, **RESPONSE_422_EXAMPLE},
+)
 @cache(expire=60)
 async def detail_order(order_id: int, db: Session = Depends(get_db)) -> OrderOut:
     try:
@@ -61,7 +83,11 @@ async def detail_order(order_id: int, db: Session = Depends(get_db)) -> OrderOut
     return response
 
 
-@router.get("")
+@router.get(
+    "",
+    status_code=status.HTTP_200_OK,
+    responses=RESPONSE_422_EXAMPLE
+)
 @cache(expire=60)
 async def list_orders(
     user_id: int | None = Query(None),
