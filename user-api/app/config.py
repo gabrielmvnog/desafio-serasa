@@ -9,6 +9,8 @@ class Settings(BaseSettings):
         "http://localhost:8080",
     ]
 
+    SECRET_KEY: str = Field(default='secretkey1234')
+
     ORDER_API_URL: AnyHttpUrl = Field(default="http://localhost:8443/orders")
     ORDER_API_TIMEOUT: float = Field(default=5.0)
 
