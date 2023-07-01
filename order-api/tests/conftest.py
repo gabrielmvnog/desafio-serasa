@@ -10,7 +10,7 @@ from tests.factories import create_order_in_data, create_order_out_data
 
 @pytest.fixture
 def client():
-    with TestClient(app) as client:
+    with TestClient(app, headers={"Authorization": "Bearer hardcoded-token"}) as client:
         yield client
 
 

@@ -12,6 +12,8 @@ class Settings(BaseSettings):
     USER_API_URL: AnyHttpUrl = Field(default="http://localhost:8443/users")
     USER_API_TIMEOUT: float = Field(default=5.0)
 
+    TOKEN: str = Field(default="hardcoded-token")
+
     REDIS_URL: RedisDsn = Field(default="redis://localhost")
 
     POSTGRES_SERVER: str = Field(default="localhost")

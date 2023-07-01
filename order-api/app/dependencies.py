@@ -1,11 +1,14 @@
 from typing import Generator
 
 import httpx
-from fastapi import HTTPException, status
+from fastapi import HTTPException, Security, status
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 from app.config import settings
 from app.db.session import SessionLocal
 from app.orders.schemas import OrderIn
+
+security = HTTPBearer()
 
 
 async def validate_order(order_in: OrderIn):
@@ -19,6 +22,11 @@ async def validate_order(order_in: OrderIn):
         )
 
     return order_in
+
+
+def authorizaton(credentials: HTTPAuthorizationCredentials = Security(security)):
+    if credentials.scheme != "Bearer" or credentials.credentials != settings.TOKEN:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
 
 
 def get_db() -> Generator:

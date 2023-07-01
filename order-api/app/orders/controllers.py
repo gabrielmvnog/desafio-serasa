@@ -4,7 +4,7 @@ from fastapi_cache.decorator import cache
 from sqlalchemy.orm import Session
 
 import app.orders.services as services
-from app.dependencies import get_db, validate_order
+from app.dependencies import authorizaton, get_db, validate_order
 from app.examples import (
     RESPONSE_303_EXAMPLE,
     RESPONSE_400_EXAMPLE,
@@ -14,7 +14,9 @@ from app.examples import (
 from app.orders.exceptions import ConflictException, OrderNotFounException
 from app.orders.schemas import OrderIn, OrderOut
 
-router = APIRouter(prefix="/orders", tags=["orders"])
+router = APIRouter(
+    prefix="/orders", tags=["orders"], dependencies=[Depends(authorizaton)]
+)
 
 
 @router.put(
@@ -83,11 +85,7 @@ async def detail_order(order_id: int, db: Session = Depends(get_db)) -> OrderOut
     return response
 
 
-@router.get(
-    "",
-    status_code=status.HTTP_200_OK,
-    responses=RESPONSE_422_EXAMPLE
-)
+@router.get("", status_code=status.HTTP_200_OK, responses=RESPONSE_422_EXAMPLE)
 @cache(expire=60)
 async def list_orders(
     user_id: int | None = Query(None),
