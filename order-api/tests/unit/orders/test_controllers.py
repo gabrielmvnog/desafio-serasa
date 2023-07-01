@@ -32,7 +32,7 @@ def detail_url():
 
 @pytest.mark.usefixtures("mocked_create_order_service", "mocked_httpx_get")
 def test_unit_create_should_return_order(client, create_url):
-    response = client.put(create_url, json=create_order_in_data().dict())
+    response = client.put(create_url, json=create_order_in_data())
 
     assert response.status_code == status.HTTP_201_CREATED
     assert response.json() == {
@@ -78,6 +78,16 @@ def test_unit_create_should_return_unprocessable_entity(client, create_url):
                 "msg": "field required",
                 "type": "value_error.missing",
             },
+            {
+                "loc": ["body", "not"],
+                "msg": "extra fields not permitted",
+                "type": "value_error.extra",
+            },
+            {
+                "loc": ["body", "__root__"],
+                "msg": "unsupported operand type(s) for *: 'NoneType' and 'NoneType'",
+                "type": "type_error",
+            },
         ]
     }
 
@@ -88,7 +98,7 @@ def test_unit_create_should_return_see_other(
 ):
     mocked_create_order_service.side_effect = ConflictException
     response = client.put(
-        create_url, json=create_order_in_data().dict(), follow_redirects=False
+        create_url, json=create_order_in_data(), follow_redirects=False
     )
 
     assert response.status_code == status.HTTP_303_SEE_OTHER
@@ -97,7 +107,7 @@ def test_unit_create_should_return_see_other(
 
 @pytest.mark.usefixtures("mocked_update_order_service")
 def test_unit_update_should_return_updated_order(client, update_url):
-    response = client.post(update_url, json=create_order_in_data().dict())
+    response = client.post(update_url, json=create_order_in_data())
 
     assert response.status_code == status.HTTP_200_OK
     assert response.content == b"null"
@@ -134,6 +144,16 @@ def test_unit_update_should_return_unprocessable_entity(client, update_url):
                 "msg": "field required",
                 "type": "value_error.missing",
             },
+            {
+                "loc": ["body", "not"],
+                "msg": "extra fields not permitted",
+                "type": "value_error.extra",
+            },
+            {
+                "loc": ["body", "__root__"],
+                "msg": "unsupported operand type(s) for *: 'NoneType' and 'NoneType'",
+                "type": "type_error",
+            },
         ]
     }
 
@@ -142,7 +162,7 @@ def test_unit_update_should_return_not_found(
     client, update_url, mocked_update_order_service
 ):
     mocked_update_order_service.return_value = False
-    response = client.post(update_url, json=create_order_in_data().dict())
+    response = client.post(update_url, json=create_order_in_data())
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
     assert response.json() == {"detail": "Order not found"}

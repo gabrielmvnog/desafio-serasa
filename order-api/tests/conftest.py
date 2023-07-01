@@ -4,7 +4,8 @@ import pytest
 from fastapi.testclient import TestClient
 
 from app.main import app
-from tests.factories import create_order_out_data
+from app.orders.schemas import OrderIn, OrderOut
+from tests.factories import create_order_in_data, create_order_out_data
 
 
 @pytest.fixture
@@ -14,10 +15,18 @@ def client():
 
 
 @pytest.fixture
-def mocked_create_order_service(mocker):
-    return mocker.patch(
-        "app.orders.services.create_order", return_value=create_order_out_data()
-    )
+def order_in_data():
+    return OrderIn(**create_order_in_data())
+
+
+@pytest.fixture
+def order_out_data():
+    return OrderOut(**create_order_out_data())
+
+
+@pytest.fixture
+def mocked_create_order_service(mocker, order_out_data):
+    return mocker.patch("app.orders.services.create_order", return_value=order_out_data)
 
 
 @pytest.fixture
@@ -31,16 +40,14 @@ def mocked_delete_order_service(mocker):
 
 
 @pytest.fixture
-def mocked_detail_order_service(mocker):
-    return mocker.patch(
-        "app.orders.services.detail_order", return_value=create_order_out_data()
-    )
+def mocked_detail_order_service(mocker, order_out_data):
+    return mocker.patch("app.orders.services.detail_order", return_value=order_out_data)
 
 
 @pytest.fixture
-def mocked_list_orders_service(mocker):
+def mocked_list_orders_service(mocker, order_out_data):
     return mocker.patch(
-        "app.orders.services.list_orders", return_value=[create_order_out_data()]
+        "app.orders.services.list_orders", return_value=[order_out_data]
     )
 
 

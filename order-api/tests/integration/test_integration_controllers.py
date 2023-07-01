@@ -30,7 +30,7 @@ def detail_url():
 
 
 def test_integration_create_should_return_order(client, create_url):
-    response = client.put(create_url, json=create_order_in_data().dict())
+    response = client.put(create_url, json=create_order_in_data())
     content = response.json()
     content.pop("created_at")
 
@@ -48,7 +48,7 @@ def test_integration_create_should_return_order(client, create_url):
 
 def test_integration_create_should_return_see_other(client, create_url):
     response = client.put(
-        create_url, json=create_order_in_data().dict(), follow_redirects=False
+        create_url, json=create_order_in_data(), follow_redirects=False
     )
 
     assert response.status_code == status.HTTP_303_SEE_OTHER
@@ -85,6 +85,16 @@ def test_integration_create_should_return_unprocessable_entity(client, create_ur
                 "loc": ["body", "total_value"],
                 "msg": "field required",
                 "type": "value_error.missing",
+            },
+            {
+                "loc": ["body", "not"],
+                "msg": "extra fields not permitted",
+                "type": "value_error.extra",
+            },
+            {
+                "loc": ["body", "__root__"],
+                "msg": "unsupported operand type(s) for *: 'NoneType' and 'NoneType'",
+                "type": "type_error",
             },
         ]
     }
@@ -133,7 +143,7 @@ def test_integration_list_should_return_orders(client, list_url):
 
 
 def test_integration_update_should_return_updated_order(client, update_url):
-    response = client.post(update_url, json=create_order_in_data().dict())
+    response = client.post(update_url, json=create_order_in_data())
 
     assert response.status_code == status.HTTP_200_OK
     assert response.content == b"null"
@@ -170,12 +180,22 @@ def test_integration_update_should_return_unprocessable_entity(client, update_ur
                 "msg": "field required",
                 "type": "value_error.missing",
             },
+            {
+                "loc": ["body", "not"],
+                "msg": "extra fields not permitted",
+                "type": "value_error.extra",
+            },
+            {
+                "loc": ["body", "__root__"],
+                "msg": "unsupported operand type(s) for *: 'NoneType' and 'NoneType'",
+                "type": "type_error",
+            },
         ]
     }
 
 
 def test_integration_update_should_return_not_found(client):
-    response = client.post("/orders/2", json=create_order_in_data().dict())
+    response = client.post("/orders/2", json=create_order_in_data())
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
     assert response.json() == {"detail": "Order not found"}
