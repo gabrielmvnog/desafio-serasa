@@ -1,5 +1,18 @@
 version: '3.2'
 services:
+    api_order:
+        build: .
+        ports:
+            - "8000:8000"
+        environment:
+            POSTGRES_SERVER: postgres_order
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: postgres
+            POSTGRES_DB: app
+            USER_API_URL: http://wiremock_order:8080/users
+            USER_API_TIMEOUT: 0.5
+            REDIS_URL: redis://redis_order:6379
+
     redis_order:
         image: sickp/alpine-redis:3.2.2
         ports:
@@ -16,7 +29,7 @@ services:
         ports:
             - "5432:5432"
 
-    wiremock_user:
+    wiremock_order:
         image: wiremock/wiremock:2.35.0
         volumes:
             - ./wiremock:/home/wiremock

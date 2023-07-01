@@ -8,7 +8,7 @@ from app.config import settings
 from app.healthchecks.controllers import router as healthchecks_router
 from app.orders.controllers import router as orders_router
 
-app = FastAPI()
+app = FastAPI(title="Order API", version="0.0.1")
 
 app.include_router(healthchecks_router)
 app.include_router(orders_router)
@@ -16,7 +16,7 @@ app.include_router(orders_router)
 
 @app.on_event("startup")
 async def startup():
-    redis = aioredis.from_url("redis://localhost")
+    redis = aioredis.from_url(settings.REDIS_URL)
     FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
 
 

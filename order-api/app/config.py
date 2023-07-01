@@ -1,6 +1,6 @@
 from typing import Any
 
-from pydantic import AnyHttpUrl, BaseSettings, Field, PostgresDsn, validator
+from pydantic import AnyHttpUrl, BaseSettings, Field, PostgresDsn, RedisDsn, validator
 
 
 class Settings(BaseSettings):
@@ -10,6 +10,9 @@ class Settings(BaseSettings):
     ]
 
     USER_API_URL: AnyHttpUrl = Field(default="http://localhost:8443/users")
+    USER_API_TIMEOUT: float = Field(default=5.0)
+
+    REDIS_URL: RedisDsn = Field(default="redis://localhost")
 
     POSTGRES_SERVER: str = Field(default="localhost")
     POSTGRES_USER: str = Field(default="postgres")

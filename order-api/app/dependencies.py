@@ -9,10 +9,8 @@ from app.orders.schemas import OrderIn
 
 
 async def validate_order(order_in: OrderIn):
-    user_id = order_in.user_id
-
     async with httpx.AsyncClient() as client:
-        response = await client.get(settings.USER_API_URL + f"/{user_id}")
+        response = await client.get(f"{settings.USER_API_URL}/{order_in.user_id}")
 
     if response.status_code != 200:
         raise HTTPException(
