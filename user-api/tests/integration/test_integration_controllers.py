@@ -3,8 +3,8 @@ from fastapi import status
 from tests.factories import create_user_in_data
 
 
-def test_integration_create_should_return_user(client, create_url):
-    response = client.put(create_url, json=create_user_in_data())
+async def test_integration_create_should_return_user(client, create_url):
+    response = await client.put(create_url, json=create_user_in_data())
     content = response.json()
     content.pop("created_at")
 
@@ -19,8 +19,8 @@ def test_integration_create_should_return_user(client, create_url):
     }
 
 
-def test_integration_create_should_return_see_other(client, create_url):
-    response = client.put(
+async def test_integration_create_should_return_see_other(client, create_url):
+    response = await client.put(
         create_url, json=create_user_in_data(), follow_redirects=False
     )
 
@@ -28,8 +28,10 @@ def test_integration_create_should_return_see_other(client, create_url):
     assert response.content == b""
 
 
-def test_integration_create_should_return_unprocessable_entity(client, create_url):
-    response = client.put(create_url, json={"not": "ok"})
+async def test_integration_create_should_return_unprocessable_entity(
+    client, create_url
+):
+    response = await client.put(create_url, json={"not": "ok"})
 
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
     assert response.json() == {
@@ -63,8 +65,8 @@ def test_integration_create_should_return_unprocessable_entity(client, create_ur
     }
 
 
-def test_integration_detail_should_return_user(client, detail_url):
-    response = client.get(detail_url)
+async def test_integration_detail_should_return_user(client, detail_url):
+    response = await client.get(detail_url)
     content = response.json()
     content.pop("created_at")
 
@@ -78,15 +80,15 @@ def test_integration_detail_should_return_user(client, detail_url):
     }
 
 
-def test_integration_detail_should_return_not_found(client):
-    response = client.get("/users/2")
+async def test_integration_detail_should_return_not_found(client):
+    response = await client.get("/users/2")
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
     assert response.json() == {"detail": "User not found"}
 
 
-def test_integration_list_should_return_users(client, list_url):
-    response = client.get(list_url)
+async def test_integration_list_should_return_users(client, list_url):
+    response = await client.get(list_url)
     content = response.json()
     content[0].pop("created_at")
 
@@ -103,15 +105,17 @@ def test_integration_list_should_return_users(client, list_url):
     ]
 
 
-def test_integration_update_should_return_updated_user(client, update_url):
-    response = client.post(update_url, json=create_user_in_data())
+async def test_integration_update_should_return_updated_user(client, update_url):
+    response = await client.post(update_url, json=create_user_in_data())
 
     assert response.status_code == status.HTTP_200_OK
     assert response.content == b"null"
 
 
-def test_integration_update_should_return_unprocessable_entity(client, update_url):
-    response = client.post(update_url, json={"not": "ok"})
+async def test_integration_update_should_return_unprocessable_entity(
+    client, update_url
+):
+    response = await client.post(update_url, json={"not": "ok"})
 
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
     assert response.json() == {
@@ -145,36 +149,36 @@ def test_integration_update_should_return_unprocessable_entity(client, update_ur
     }
 
 
-def test_integration_update_should_return_not_found(client):
-    response = client.post("/users/2", json=create_user_in_data())
+async def test_integration_update_should_return_not_found(client):
+    response = await client.post("/users/2", json=create_user_in_data())
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
     assert response.json() == {"detail": "User not found"}
 
 
-def test_integration_delete_should_return_no_content(client, delete_url):
-    response = client.delete(delete_url)
+async def test_integration_delete_should_return_no_content(client, delete_url):
+    response = await client.delete(delete_url)
 
     assert response.status_code == status.HTTP_204_NO_CONTENT
     assert response.content == b""
 
 
-def test_integration_delete_should_return_not_found(client):
-    response = client.delete("/users/2")
+async def test_integration_delete_should_return_not_found(client):
+    response = await client.delete("/users/2")
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
     assert response.json() == {"detail": "User not found"}
 
 
-def test_integration_delete_should_return_conflict(client):
-    response = client.delete("/users/99999")
+async def test_integration_delete_should_return_conflict(client):
+    response = await client.delete("/users/99999")
 
     assert response.status_code == status.HTTP_409_CONFLICT
     assert response.json() == {"detail": "User id [99999] has orders"}
 
 
-def test_integration_list_should_return_empty_list(client, list_url):
-    response = client.get(list_url)
+async def test_integration_list_should_return_empty_list(client, list_url):
+    response = await client.get(list_url)
 
     assert response.status_code == status.HTTP_200_OK
     assert response.json() == []

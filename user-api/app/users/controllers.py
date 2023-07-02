@@ -28,7 +28,7 @@ async def create_user(
     request: Request, user_id: int, user_in: UserIn, db: Session = Depends(get_db)
 ) -> UserOut:
     try:
-        response = services.create_user(db, user_in=user_in, user_id=user_id)
+        response = await services.create_user(db, user_in=user_in, user_id=user_id)
     except ConflictException:
         return RedirectResponse(request.url, status_code=status.HTTP_303_SEE_OTHER)
 
@@ -43,7 +43,7 @@ async def create_user(
 async def update_user(
     user_id: int, user_in: UserIn, db: Session = Depends(get_db)
 ) -> None:
-    response = services.update_user(db, user_in=user_in, user_id=user_id)
+    response = await services.update_user(db, user_in=user_in, user_id=user_id)
 
     if not response:
         raise HTTPException(
@@ -59,7 +59,7 @@ async def update_user(
 async def delete_user(
     user_id: int, db: Session = Depends(get_db), _: None = Depends(check_for_orders)
 ) -> None:
-    response = services.delete_user(db, user_id=user_id)
+    response = await services.delete_user(db, user_id=user_id)
 
     if not response:
         raise HTTPException(
@@ -75,7 +75,7 @@ async def delete_user(
 @cache(expire=60)
 async def detail_user(user_id: int, db: Session = Depends(get_db)) -> UserOut:
     try:
-        user = services.detail_user(db, user_id=user_id)
+        user = await services.detail_user(db, user_id=user_id)
     except UserNotFounException:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
@@ -91,6 +91,6 @@ async def list_users(
     limit: int | None = Query(None, example=10),
     db: Session = Depends(get_db),
 ) -> list[UserOut | None]:
-    user = services.list_users(db, skip=skip, limit=limit)
+    user = await services.list_users(db, skip=skip, limit=limit)
 
     return user

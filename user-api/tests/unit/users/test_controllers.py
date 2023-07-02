@@ -6,8 +6,8 @@ from tests.factories import create_user_in_data
 
 
 @pytest.mark.usefixtures("mocked_create_user_service")
-def test_unit_create_should_return_user(client, create_url):
-    response = client.put(create_url, json=create_user_in_data())
+async def test_unit_create_should_return_user(client, create_url):
+    response = await client.put(create_url, json=create_user_in_data())
 
     assert response.status_code == status.HTTP_201_CREATED
     assert response.json() == {
@@ -21,8 +21,8 @@ def test_unit_create_should_return_user(client, create_url):
     }
 
 
-def test_unit_create_should_return_unprocessable_entity(client, create_url):
-    response = client.put(create_url, json={"not": "ok"})
+async def test_unit_create_should_return_unprocessable_entity(client, create_url):
+    response = await client.put(create_url, json={"not": "ok"})
 
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
     assert response.json() == {
@@ -56,11 +56,11 @@ def test_unit_create_should_return_unprocessable_entity(client, create_url):
     }
 
 
-def test_unit_create_should_return_see_other(
+async def test_unit_create_should_return_see_other(
     client, create_url, mocked_create_user_service
 ):
     mocked_create_user_service.side_effect = ConflictException
-    response = client.put(
+    response = await client.put(
         create_url, json=create_user_in_data(), follow_redirects=False
     )
 
@@ -69,15 +69,15 @@ def test_unit_create_should_return_see_other(
 
 
 @pytest.mark.usefixtures("mocked_update_user_service")
-def test_unit_update_should_return_updated_user(client, update_url):
-    response = client.post(update_url, json=create_user_in_data())
+async def test_unit_update_should_return_updated_user(client, update_url):
+    response = await client.post(update_url, json=create_user_in_data())
 
     assert response.status_code == status.HTTP_200_OK
     assert response.content == b"null"
 
 
-def test_unit_update_should_return_unprocessable_entity(client, update_url):
-    response = client.post(update_url, json={"not": "ok"})
+async def test_unit_update_should_return_unprocessable_entity(client, update_url):
+    response = await client.post(update_url, json={"not": "ok"})
 
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
     assert response.json() == {
@@ -111,38 +111,38 @@ def test_unit_update_should_return_unprocessable_entity(client, update_url):
     }
 
 
-def test_unit_update_should_return_not_found(
+async def test_unit_update_should_return_not_found(
     client, update_url, mocked_update_user_service
 ):
     mocked_update_user_service.return_value = False
-    response = client.post(update_url, json=create_user_in_data())
+    response = await client.post(update_url, json=create_user_in_data())
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
     assert response.json() == {"detail": "User not found"}
 
 
 @pytest.mark.usefixtures("mocked_delete_user_service", "mocked_httpx_get")
-def test_unit_delete_should_return_no_content(client, delete_url):
-    response = client.delete(delete_url)
+async def test_unit_delete_should_return_no_content(client, delete_url):
+    response = await client.delete(delete_url)
 
     assert response.status_code == status.HTTP_204_NO_CONTENT
     assert response.content == b""
 
 
 @pytest.mark.usefixtures("mocked_httpx_get")
-def test_unit_delete_should_return_not_found(
+async def test_unit_delete_should_return_not_found(
     client, delete_url, mocked_delete_user_service
 ):
     mocked_delete_user_service.return_value = False
-    response = client.delete(delete_url)
+    response = await client.delete(delete_url)
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
     assert response.json() == {"detail": "User not found"}
 
 
 @pytest.mark.usefixtures("mocked_detail_user_service")
-def test_unit_detail_should_return_user(client, detail_url):
-    response = client.get(detail_url)
+async def test_unit_detail_should_return_user(client, detail_url):
+    response = await client.get(detail_url)
 
     assert response.json() == {
         "name": "User Test",
@@ -155,19 +155,19 @@ def test_unit_detail_should_return_user(client, detail_url):
     }
 
 
-def test_unit_detail_should_return_not_found(
+async def test_unit_detail_should_return_not_found(
     client, detail_url, mocked_detail_user_service
 ):
     mocked_detail_user_service.side_effect = UserNotFounException
-    response = client.get(detail_url)
+    response = await client.get(detail_url)
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
     assert response.json() == {"detail": "User not found"}
 
 
 @pytest.mark.usefixtures("mocked_list_users_service")
-def test_unit_list_should_return_users(client, list_url):
-    response = client.get(list_url)
+async def test_unit_list_should_return_users(client, list_url):
+    response = await client.get(list_url)
 
     assert response.status_code == status.HTTP_200_OK
     assert response.json() == [
@@ -183,11 +183,11 @@ def test_unit_list_should_return_users(client, list_url):
     ]
 
 
-def test_unit_list_should_return_empty_list(
+async def test_unit_list_should_return_empty_list(
     client, list_url, mocked_list_users_service
 ):
     mocked_list_users_service.return_value = []
-    response = client.get(list_url)
+    response = await client.get(list_url)
 
     assert response.status_code == status.HTTP_200_OK
     assert response.json() == []

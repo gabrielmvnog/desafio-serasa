@@ -1,17 +1,33 @@
+import asyncio
+from unittest import mock
 from unittest.mock import MagicMock
 
 import pytest
 from fastapi import status
-from fastapi.testclient import TestClient
+from httpx import AsyncClient
 
-from app.main import app
 from app.users.schemas import UserOut
 from tests.factories import create_user_out_data
 
+mock.patch("fastapi_cache.decorator.cache", lambda *args, **kwargs: lambda f: f).start()
 
-@pytest.fixture
-def client():
-    with TestClient(app, headers={"Authorization": "Bearer hardcoded-token"}) as client:
+
+@pytest.fixture(scope="session")
+def event_loop():
+    loop = asyncio.get_event_loop()
+    yield loop
+    loop.close()
+
+
+@pytest.fixture(scope="session")
+async def client():
+    from app.main import app
+
+    async with AsyncClient(
+        app=app,
+        base_url="http://app",
+        headers={"Authorization": "Bearer hardcoded-token"},
+    ) as client:
         yield client
 
 

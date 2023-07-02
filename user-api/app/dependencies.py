@@ -5,7 +5,7 @@ from fastapi import HTTPException, Security, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 from app.config import settings
-from app.db.session import SessionLocal
+from app.db.session import async_session
 
 security = HTTPBearer()
 
@@ -32,9 +32,9 @@ def authorizaton(credentials: HTTPAuthorizationCredentials = Security(security))
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
 
 
-def get_db() -> Generator:
+async def get_db() -> Generator:
     try:
-        db = SessionLocal()
-        yield db
+        async with async_session() as db:
+            yield db
     finally:
-        db.close()
+        await db.close()
