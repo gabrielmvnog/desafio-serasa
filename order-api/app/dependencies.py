@@ -12,7 +12,10 @@ security = HTTPBearer()
 
 
 async def validate_order(order_in: OrderIn):
-    async with httpx.AsyncClient() as client:
+    async with httpx.AsyncClient(
+        timeout=settings.USER_API_TIMEOUT,
+        headers={"Authorization": settings.USER_API_TOKEN},
+    ) as client:
         response = await client.get(f"{settings.USER_API_URL}/{order_in.user_id}")
 
     if response.status_code != 200:

@@ -5,13 +5,16 @@ services:
         ports:
             - "8000:8000"
         environment:
-            POSTGRES_SERVER: postgres_order
-            POSTGRES_USER: postgres
-            POSTGRES_PASSWORD: postgres
-            POSTGRES_DB: app
-            USER_API_URL: http://wiremock_order:8080/users
+            ELASTICSEARCH_HOSTS: '["http://elasticsearch_order:9200"]'
+            USER_API_URL: http://api_user:8000/users
             USER_API_TIMEOUT: 0.5
+            USER_API_TOKEN: "Bearer hardcoded-token"
             REDIS_URL: redis://redis_order:6379
+        networks:
+            - default
+            - user-api_default
+        external_links:
+            - api_user:api_user
 
     redis_order:
         image: sickp/alpine-redis:3.2.2
@@ -33,3 +36,7 @@ services:
             - ./wiremock:/home/wiremock
         ports:
             - "8443:8080"
+
+networks:
+  user-api_default:
+    external: true

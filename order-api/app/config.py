@@ -9,6 +9,7 @@ class Settings(BaseSettings):
 
     USER_API_URL: AnyHttpUrl = Field(default="http://localhost:8443/users")
     USER_API_TIMEOUT: float = Field(default=5.0)
+    USER_API_TOKEN: str = Field(default="")
 
     ORDERS_INDEX: str = Field(default="orders")
 

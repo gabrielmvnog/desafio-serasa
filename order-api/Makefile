@@ -23,6 +23,3 @@ test-matching:
 
 setup-elasticsearch:
 	@poetry run python -m scripts.setup_es
-
-run-migrations:
-	@poetry run alembic upgrade head

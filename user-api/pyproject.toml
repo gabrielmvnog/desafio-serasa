@@ -21,6 +21,7 @@ psycopg2-binary = "^2.9.6"
 cryptography = "^41.0.1"
 asyncpg = "^0.27.0"
 pytest-asyncio = "^0.21.0"
+sqlalchemy-utils = "^0.41.1"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.0.275"
@@ -28,7 +29,6 @@ ruff = "^0.0.275"
 [tool.poetry.group.test.dependencies]
 pytest = "^7.4.0"
 pytest-mock = "^3.11.1"
-sqlalchemy-utils = "^0.41.1"
 trio = "^0.22.0"
 
 [build-system]

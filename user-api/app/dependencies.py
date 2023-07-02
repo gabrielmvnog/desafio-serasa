@@ -11,7 +11,10 @@ security = HTTPBearer()
 
 
 async def check_for_orders(user_id: int) -> None:
-    async with httpx.AsyncClient(timeout=settings.ORDER_API_TIMEOUT) as client:
+    async with httpx.AsyncClient(
+        timeout=settings.ORDER_API_TIMEOUT,
+        headers={"Authorization": settings.ORDER_API_TOKEN},
+    ) as client:
         response = await client.get(settings.ORDER_API_URL, params={"user_id": user_id})
 
     if response.status_code != status.HTTP_200_OK:

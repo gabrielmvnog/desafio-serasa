@@ -3,20 +3,24 @@ services:
     api_user:
         build: .
         ports:
-            - "8000:8000"
+            - "8001:8000"
         environment:
             POSTGRES_SERVER: postgres_user
             POSTGRES_USER: postgres
             POSTGRES_PASSWORD: postgres
             POSTGRES_DB: app
-            ORDER_API_URL: http://wiremock_user:8080/orders
+            ORDER_API_URL: http://api_order:8000/orders
             ORDER_API_TIMEOUT: 0.5
+            ORDER_API_TOKEN: "Bearer hardcoded-token"
             REDIS_URL: redis://redis_user:6379
+        networks:
+            - default
+            - order-api_default
 
     redis_user:
         image: sickp/alpine-redis:3.2.2
         ports:
-            - "6379:6379"
+            - "6378:6379"
 
     postgres_user:
         image: postgres:14.1-alpine
@@ -27,11 +31,15 @@ services:
             POSTGRES_PASSWORD: postgres
             POSTGRES_DB: app
         ports:
-            - "5432:5432"
+            - "5433:5432"
 
     wiremock_user:
         image: wiremock/wiremock:2.35.0
         volumes:
             - ./wiremock:/home/wiremock
         ports:
-            - "8443:8080"
+            - "8444:8080"
+
+networks:
+  order-api_default:
+    external: true

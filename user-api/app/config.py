@@ -13,6 +13,7 @@ class Settings(BaseSettings):
 
     ORDER_API_URL: AnyHttpUrl = Field(default="http://localhost:8443/orders")
     ORDER_API_TIMEOUT: float = Field(default=5.0)
+    ORDER_API_TOKEN: str = Field(default="")
 
     TOKEN: str = Field(default="hardcoded-token")
 
