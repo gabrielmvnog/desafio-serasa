@@ -31,7 +31,7 @@ def authorizaton(credentials: HTTPAuthorizationCredentials = Security(security))
 
 async def get_db() -> Generator:
     try:
-        db = AsyncElasticsearch(hosts=["http://localhost:9200"])
+        db = AsyncElasticsearch(hosts=settings.ELASTICSEARCH_HOSTS)
         yield db
     finally:
         await db.close()
