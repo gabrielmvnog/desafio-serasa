@@ -1,11 +1,11 @@
 from typing import Generator
 
 import httpx
+from elasticsearch import AsyncElasticsearch
 from fastapi import HTTPException, Security, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 from app.config import settings
-from app.db.session import SessionLocal
 from app.orders.schemas import OrderIn
 
 security = HTTPBearer()
@@ -29,9 +29,9 @@ def authorizaton(credentials: HTTPAuthorizationCredentials = Security(security))
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
 
 
-def get_db() -> Generator:
+async def get_db() -> Generator:
     try:
-        db = SessionLocal()
+        db = AsyncElasticsearch(hosts=["http://localhost:9200"])
         yield db
     finally:
-        db.close()
+        await db.close()

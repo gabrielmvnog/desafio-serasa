@@ -1,4 +1,4 @@
-.PHONY: dev run lint-check lint test test-integration test-matching create-migration run-migrations
+.PHONY: dev run lint-check lint test test-integration test-matching setup-elasticsearch
 
 dev: 
 	@poetry run uvicorn app.main:app --reload
@@ -16,13 +16,13 @@ test:
 	@poetry run pytest tests/unit
 
 test-integration:
-	@POSTGRES_DB=app_test poetry run pytest tests/integration
+	@ORDERS_INDEX=orders_test poetry run pytest tests/integration
 
 test-matching:
-	@POSTGRES_DB=app_test poetry run pytest --pdb -k ${K}
+	@ORDERS_INDEX=orders_test poetry run pytest --pdb -k ${K}
 
-create-migration:
-	@poetry run alembic revision --autogenerate -m ${M}
+setup-elasticsearch:
+	@poetry run python -m scripts.setup_es
 
 run-migrations:
 	@poetry run alembic upgrade head

@@ -1,57 +1,80 @@
-from fastapi.encoders import jsonable_encoder
-from sqlalchemy.exc import IntegrityError, NoResultFound
-from sqlalchemy.orm import Session
+import logging
+from datetime import datetime
 
+from elasticsearch import AsyncElasticsearch, ConflictError, NotFoundError
+
+from app.config import settings
 from app.orders.exceptions import ConflictException, OrderNotFounException
-from app.orders.models import Order
 from app.orders.schemas import OrderIn, OrderOut
 
+logger = logging.getLogger(__name__)
 
-def list_orders(
-    db: Session, user_id: int | None = None, skip: int = 0, limit: int = 10
+
+async def list_orders(
+    db: AsyncElasticsearch, user_id: int | None = None, skip: int = 0, limit: int = 10
 ) -> list[OrderOut | None]:
-    query = db.query(Order)
+    query = None
 
     if user_id:
-        query = query.filter(Order.user_id == user_id)
+        query = {"match": {"user_id": user_id}}
 
-    return query.offset(skip).limit(limit).all()
+    results = await db.search(
+        index=settings.ORDERS_INDEX,
+        query=query,
+        from_=skip,
+        size=limit,
+    )
+
+    return [{"id": hits["_id"], **hits["_source"]} for hits in results["hits"]["hits"]]
 
 
-def detail_order(db: Session, order_id: int) -> OrderOut:
+async def detail_order(db: AsyncElasticsearch, order_id: int) -> OrderOut:
     try:
-        db_order = db.query(Order).filter(Order.id == order_id).one()
-    except NoResultFound:
+        db_order = await db.get(index=settings.ORDERS_INDEX, id=order_id)
+    except NotFoundError:
         raise OrderNotFounException from None
 
-    return OrderOut.from_orm(db_order)
+    return {"id": db_order["_id"], **db_order["_source"]}
 
 
-def create_order(db: Session, order_in: OrderIn, order_id: int) -> OrderOut:
-    order_in_data = jsonable_encoder(order_in)
-    db_order = Order(id=order_id, **order_in_data)
+async def create_order(
+    db: AsyncElasticsearch, order_in: OrderIn, order_id: int
+) -> OrderOut:
+    order_out = OrderOut(id=order_id, **order_in.dict())
 
     try:
-        db.add(db_order)
-        db.commit()
-        db.refresh(db_order)
-    except IntegrityError as err:
-        if "UniqueViolation" in err.args[0]:
-            raise ConflictException from None
+        await db.create(
+            index=settings.ORDERS_INDEX,
+            id=order_id,
+            document=order_out.dict(exclude={"id"}),
+        )
+    except ConflictError:
+        raise ConflictException from None
 
-    return OrderOut.from_orm(db_order)
+    return order_out
 
 
-def update_order(db: Session, order_in: OrderIn, order_id: int) -> bool:
-    order_in_data = jsonable_encoder(order_in)
-    updated = db.query(Order).filter(Order.id == order_id).update(order_in_data)
-    db.commit()
+async def update_order(
+    db: AsyncElasticsearch, order_in: OrderIn, order_id: int
+) -> bool:
+    order_out = OrderOut(id=order_id, updated_at=datetime.utcnow(), **order_in.dict())
+
+    try:
+        updated = await db.update(
+            index=settings.ORDERS_INDEX,
+            id=order_id,
+            doc=order_out.dict(exclude={"id", "created_at"}),
+        )
+    except NotFoundError:
+        raise OrderNotFounException from None
 
     return bool(updated)
 
 
-def delete_order(db: Session, order_id: int) -> bool:
-    deleted = db.query(Order).filter(Order.id == order_id).delete()
-    db.commit()
+async def delete_order(db: AsyncElasticsearch, order_id: int) -> bool:
+    try:
+        deleted = await db.delete(index=settings.ORDERS_INDEX, id=order_id)
+    except NotFoundError:
+        raise OrderNotFounException from None
 
     return bool(deleted)

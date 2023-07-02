@@ -1,17 +1,54 @@
+import asyncio
 from unittest.mock import MagicMock
 
 import pytest
-from fastapi.testclient import TestClient
+from httpx import AsyncClient
 
 from app.main import app
 from app.orders.schemas import OrderIn, OrderOut
 from tests.factories import create_order_in_data, create_order_out_data
 
 
-@pytest.fixture
-def client():
-    with TestClient(app, headers={"Authorization": "Bearer hardcoded-token"}) as client:
+@pytest.fixture(scope="session")
+def event_loop():
+    loop = asyncio.get_event_loop()
+    yield loop
+    loop.close()
+
+
+@pytest.fixture(scope="session")
+async def client():
+    async with AsyncClient(
+        app=app,
+        base_url="http://app",
+        headers={"Authorization": "Bearer hardcoded-token"},
+    ) as client:
         yield client
+
+
+@pytest.fixture
+def create_url():
+    return "/orders/1"
+
+
+@pytest.fixture
+def update_url():
+    return "/orders/1"
+
+
+@pytest.fixture
+def delete_url():
+    return "/orders/1"
+
+
+@pytest.fixture
+def list_url():
+    return "/orders"
+
+
+@pytest.fixture
+def detail_url():
+    return "/orders/1"
 
 
 @pytest.fixture

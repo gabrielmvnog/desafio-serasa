@@ -25,8 +25,8 @@ class OrderIn(BaseModel):
 
 class OrderOut(OrderIn):
     id: int = Field(..., example=1)
-    created_at: datetime = Field(..., example=datetime(2023, 7, 1))
-    updated_at: datetime | None = Field(..., example=datetime(2023, 7, 1))
+    created_at: datetime = Field(default_factory=datetime.utcnow, example=datetime(2023, 7, 1))
+    updated_at: datetime | None = Field(None, example=datetime(2023, 7, 1))
 
     class Config:
         orm_mode = True

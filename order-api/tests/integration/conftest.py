@@ -1,19 +1,13 @@
 import pytest
-from sqlalchemy import create_engine
-from sqlalchemy_utils import create_database, database_exists, drop_database
+from elasticsearch import Elasticsearch
 
-from alembic import command
-from alembic.config import Config
 from app.config import settings
+from app.orders.mappings import orders_mapping
 
 
 @pytest.fixture(scope="session", autouse=True)
 def create_test_database():
-    url = settings.SQLALCHEMY_DATABASE_URI
-    create_engine(url)
-    assert not database_exists(url), "Test database already exists. Aborting tests."
-    create_database(url)
-    config = Config("alembic.ini")
-    command.upgrade(config, "head")
+    elasticsearch = Elasticsearch(hosts=settings.ELASTICSEARCH_HOSTS)
+    elasticsearch.indices.create(index="orders_test", mappings=orders_mapping)
     yield
-    drop_database(url)
+    elasticsearch.indices.delete(index="orders_test")
