@@ -37,7 +37,7 @@ async def create_user(
 
 @router.post(
     "/{user_id}",
-    status_code=status.HTTP_200_OK,
+    status_code=status.HTTP_204_NO_CONTENT,
     responses={**RESPONSE_404_EXAMPLE, **RESPONSE_422_EXAMPLE},
 )
 async def update_user(

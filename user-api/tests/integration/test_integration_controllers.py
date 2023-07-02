@@ -108,8 +108,8 @@ async def test_integration_list_should_return_users(client, list_url):
 async def test_integration_update_should_return_updated_user(client, update_url):
     response = await client.post(update_url, json=create_user_in_data())
 
-    assert response.status_code == status.HTTP_200_OK
-    assert response.content == b"null"
+    assert response.status_code == status.HTTP_204_NO_CONTENT
+    assert response.content == b""
 
 
 async def test_integration_update_should_return_unprocessable_entity(
