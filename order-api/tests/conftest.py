@@ -1,12 +1,14 @@
 import asyncio
+from unittest import mock
 from unittest.mock import MagicMock
 
 import pytest
 from httpx import AsyncClient
 
-from app.main import app
 from app.orders.schemas import OrderIn, OrderOut
 from tests.factories import create_order_in_data, create_order_out_data
+
+mock.patch("fastapi_cache.decorator.cache", lambda *args, **kwargs: lambda f: f).start()
 
 
 @pytest.fixture(scope="session")
@@ -18,6 +20,8 @@ def event_loop():
 
 @pytest.fixture(scope="session")
 async def client():
+    from app.main import app
+
     async with AsyncClient(
         app=app,
         base_url="http://app",

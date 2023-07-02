@@ -1,6 +1,7 @@
 from elasticsearch import AsyncElasticsearch
 from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
 from fastapi.responses import RedirectResponse
+from fastapi_cache.decorator import cache
 
 import app.orders.services as services
 from app.dependencies import authorizaton, get_db, validate_order
@@ -19,6 +20,7 @@ router = APIRouter(
 
 
 @router.get("", status_code=status.HTTP_200_OK, responses=RESPONSE_422_EXAMPLE)
+@cache(expire=60)
 async def list_orders(
     user_id: int | None = Query(None),
     skip: int | None = Query(None),
@@ -84,6 +86,7 @@ async def delete_order(order_id: int, db: AsyncElasticsearch = Depends(get_db)) 
     status_code=status.HTTP_200_OK,
     responses={**RESPONSE_404_EXAMPLE, **RESPONSE_422_EXAMPLE},
 )
+@cache(expire=60)
 async def detail_order(
     order_id: int, db: AsyncElasticsearch = Depends(get_db)
 ) -> OrderOut:
