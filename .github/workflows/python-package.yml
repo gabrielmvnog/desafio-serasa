@@ -5,9 +5,9 @@ name: Python package
 
 on:
   push:
-    branches: [ "master", "dev" ]
+    branches: [ "main", "dev" ]
   pull_request:
-    branches: [ "master", "dev" ]
+    branches: [ "main", "dev" ]
 
 jobs:
   build:
@@ -38,4 +38,3 @@ jobs:
       working-directory: ${{ matrix.dir }}
       run: |
         poetry run pytest tests/unit
-        
